@@ -15,7 +15,7 @@ def login(chrome, username, password):
 
     chrome.find_element_by_name('username').send_keys(username)
     chrome.find_element_by_name('password').send_keys(password)
-    chrome.find_element_by_tag_name("form").find_elements_by_tag_name("button")[1].click()
+    chrome.find_element_by_tag_name('form').find_elements_by_tag_name('button')[1].click()
     time.sleep(3)
 
     chrome.find_element_by_xpath('//button[text()="後で"]').click()
@@ -23,6 +23,12 @@ def login(chrome, username, password):
 
     chrome.find_element_by_xpath('//button[text()="後で"]').click()
     time.sleep(3)
+
+def get_post_counts(chrome):
+    # ターゲットとなるユーザの投稿件数を取得
+    post_count = chrome.find_element_by_xpath('//span[text()="投稿"]').text
+    post_count = post_count.replace('件', '').replace('投稿', '').replace(',', '')
+    return int(post_count)
 
 
 def get_posts_by_keyword(chrome, target_urls, keyword):
@@ -33,10 +39,8 @@ def get_posts_by_keyword(chrome, target_urls, keyword):
             chrome.get(target_url)
 
             # ターゲットとなるユーザの投稿件数を取得
-            post_count = chrome.find_element_by_xpath('//span[text()="投稿"]').text
-            post_count = post_count.replace('件', '').replace('投稿', '').replace(',', '')
+            post_count = get_post_counts(chrome)
             print('投稿件数:', post_count)
-            post_count = int(post_count)
 
             # 投稿件数に応じて全スクロール
             if post_count > 12:
